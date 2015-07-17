@@ -96,21 +96,24 @@ public class TCPServer
 			DataInputStream dis = null;
 			DataOutputStream dos =null;
 			
-			int bufferSize = 8192;
+			int bufferSize = 1024;
 			byte[] bufBytes = new byte[bufferSize];
 			
 			String filename = null;
 			try{
 				dis = new DataInputStream(new BufferedInputStream(incoming.getInputStream()));
 				filename = dis.readUTF();
-				if(filename.equals("Speed.test")) {
-					//long transTime = System.currentTimeMillis() - dis.readLong();
-					//System.out.println("Time: " + transTime);
-					return;
-				}
+				
 				
 				//Long lengthLong = dis.readLong();
 				long transTime = dis.readLong();
+				
+				if(filename.equals("Speed.test")) {
+					//long transTime = System.currentTimeMillis() - dis.readLong();
+					System.out.println("Time: " + (System.currentTimeMillis() - transTime));
+					return;
+				}
+				
 				if(props.getProperty("os.name").split("\\s+")[0].equals("Mac"))
 					dos = new DataOutputStream(new BufferedOutputStream(new FileOutputStream("/Users/sen/Documents/workspace/Felix/bundle/" + filename)));
 				else if(props.getProperty("os.name").split("\\s+")[0].equals("Windows"))
@@ -130,6 +133,7 @@ public class TCPServer
 				System.out.println(filename +" received!");
 				
 			}catch (Exception e) {
+					if(filename.equals("Speed.test")) return;
 					e.printStackTrace();
 					System.out.println("receive file failed");
 			}finally{
